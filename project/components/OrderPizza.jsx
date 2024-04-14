@@ -1,5 +1,6 @@
 import { FormGroup, Input, Label } from "reactstrap";
 import "./orderpizza.css";
+import { Link } from "react-router-dom/cjs/react-router-dom.min";
 
 export default function OrderPizza() {
   return (
@@ -119,6 +120,7 @@ export default function OrderPizza() {
             <p>seçim toplam</p>
             <p>toplam</p>
             <p>toplam tl</p>
+            <Link to="/Success">SİPARİŞ VER</Link>
           </div>
         </div>
       </div>
