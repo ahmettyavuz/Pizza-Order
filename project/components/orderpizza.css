@@ -3,3 +3,8 @@
   padding: 5%;
   text-align: center;
 }
+.main {
+  max-width: 500px;
+  padding-left: auto;
+  padding-right: auto;
+}
