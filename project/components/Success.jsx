@@ -1,5 +1,5 @@
 import "./success.css";
-export default function Success() {
+function Success() {
   return (
     <>
       <div className="success">
@@ -7,9 +7,13 @@ export default function Success() {
           src="../../Assets/mile1-assets/logo.svg"
           alt="Teknolojik Yemekler"
         />
-        <p>TEBRİKLER!</p>
-        <p>SİPARİŞİNİZ ALINDI!</p>
+        <div>
+          <p>TEBRİKLER!</p>
+          <p>SİPARİŞİNİZ ALINDI!</p>
+        </div>
       </div>
     </>
   );
 }
+
+export default Success;

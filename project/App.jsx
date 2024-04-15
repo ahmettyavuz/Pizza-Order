@@ -1,7 +1,7 @@
 import { Route } from "react-router-dom";
 import Home from "./components/Home";
 import OrderPizza from "./components/OrderPizza";
-import Success from "./components/Successs";
+import Success from "./components/Success";
 
 function App() {
   return (
