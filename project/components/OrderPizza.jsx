@@ -2,6 +2,7 @@ import { Form, FormGroup, Input, Label } from "reactstrap";
 import "./orderpizza.css";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Footer from "./Footer";
 
 const malzemeler = [
   "Pepperoni",
@@ -26,6 +27,21 @@ function OrderPizza() {
   const [total, setTotal] = useState(0);
   const [size, setSize] = useState("");
   const [secilenMalzemeler, setSecilenMalzemeler] = useState([]);
+  const [name, setName] = useState("");
+  const [siparisNotu, setSiparisNotu] = useState("");
+
+  const onChangeName = (e) => {
+    setName(e.target.value);
+  };
+
+  const onChangeSiparisNotu = (e) => {
+    setSiparisNotu(e.target.value);
+  };
+
+  useEffect(() => {
+    console.log(name);
+    console.log(siparisNotu);
+  }, [name, siparisNotu]);
 
   const onChange = (type) => {
     type == "Arttır"
@@ -63,7 +79,7 @@ function OrderPizza() {
         ? 125.5
         : 0;
     //setSecimler(secilenMalzemeler.length*5);
-    setTotal(sizeMoney * count + secimler);
+    setTotal(sizeMoney * count + secimler * count);
   }, [secimler, size, count]);
 
   useEffect(() => {
@@ -170,12 +186,25 @@ function OrderPizza() {
               </Form>
             </div>
             <FormGroup className="sipariş-notu">
+              <Label for="isim">İsim</Label>
+              <Input
+                id="isim"
+                name="isim"
+                type="textarea"
+                placeholder="En az 3 karakterli isim giriniz!"
+                onChange={onChangeName}
+                value={name}
+              />
+            </FormGroup>
+            <FormGroup className="sipariş-notu">
               <Label for="exampleText">Sipariş Notu</Label>
               <Input
                 id="exampleText"
                 name="text"
                 type="textarea"
                 placeholder="Siparişine eklemek istediğin bir not var mı?"
+                onChange={onChangeSiparisNotu}
+                value={siparisNotu}
               />
             </FormGroup>
             <hr />
@@ -197,13 +226,14 @@ function OrderPizza() {
                   </div>
                 </div>
                 <div className="link-pizza">
-                  <Link to="/Success">SİPARİŞ VER</Link>{" "}
+                  <Link to="/OrderSuccess">SİPARİŞ VER</Link>{" "}
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <Footer></Footer>
     </>
   );
 }
