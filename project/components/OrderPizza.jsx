@@ -1,8 +1,10 @@
-import { Form, FormGroup, Input, Label } from "reactstrap";
+import { Form, FormFeedback, FormGroup, Input, Label } from "reactstrap";
 import "./orderpizza.css";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Footer from "./Footer";
+import axios from "axios";
+import { useHistory } from "react-router-dom/";
 
 const malzemeler = [
   "Pepperoni",
@@ -12,7 +14,6 @@ const malzemeler = [
   "Mısır",
   "Sucuk",
   "Kanada Jambonu",
-  "Sucuk",
   "Ananas",
   "Tavuk Izgara",
   "Jalepeno",
@@ -21,72 +22,116 @@ const malzemeler = [
   "Sarımsak",
 ];
 
-function OrderPizza() {
-  const [count, setCount] = useState(0);
-  const [secimler, setSecimler] = useState(0);
-  const [total, setTotal] = useState(0);
-  const [size, setSize] = useState("");
-  const [secilenMalzemeler, setSecilenMalzemeler] = useState([]);
-  const [name, setName] = useState("");
-  const [siparisNotu, setSiparisNotu] = useState("");
+const errorMessage = {
+  boyut: "Lütfen pizza boyutunu seçiniz.",
+  hamur: "Lütfen hamur kalınlığını seçiniz.",
+  malzeme: "En az 4 malzeme seçmelisiniz.",
+  isim: "En az 3 karakterli isim girmeliniz.",
+};
+const siparisForm = {
+  isim: "",
+  boyut: "",
+  hamur: "",
+  malzemeler: [],
+  adet: 0,
+  not: "",
+  total: function () {
+    return (
+      this.adet *
+      ((this.boyut === "Küçük"
+        ? 85.5
+        : this.boyut === "Orta"
+        ? 100.5
+        : this.boyut === "Büyük"
+        ? 125.5
+        : 0) +
+        this.malzemeler.length * 5)
+    );
+  },
+};
 
-  const onChangeName = (e) => {
-    setName(e.target.value);
-  };
+function OrderPizza(props) {
+  const [siparisData, setSiparisData] = useState(siparisForm);
+  const [isValid, setIsValid] = useState(false);
+  const [errors, setErrors] = useState({});
 
-  const onChangeSiparisNotu = (e) => {
-    setSiparisNotu(e.target.value);
-  };
+  const history = useHistory();
 
-  useEffect(() => {
-    console.log(name);
-    console.log(siparisNotu);
-  }, [name, siparisNotu]);
+  const { data } = props;
 
-  const onChange = (type) => {
-    type == "Arttır"
-      ? setCount(count + 1)
-      : type == "Azalt" && count > 0
-      ? setCount(count - 1)
-      : null;
-  };
+  const onChange = (event) => {
+    if (event === "arttır") {
+      setSiparisData({ ...siparisData, adet: siparisData.adet + 1 });
+    } else if (event === "azalt" && siparisData.adet > 0) {
+      setSiparisData({ ...siparisData, adet: siparisData.adet - 1 });
+    } else {
+      const { name, value } = event.target;
 
-  const onChangeSecimler = (e) => {
-    const malzeme = e.target.value;
-
-    if (!secilenMalzemeler.includes(malzeme))
-      setSecilenMalzemeler([...secilenMalzemeler, malzeme]);
-    else {
-      const newMalzeme = [...secilenMalzemeler];
-      newMalzeme.splice(newMalzeme.indexOf(malzeme), 1);
-      setSecilenMalzemeler(newMalzeme);
+      if (name === "malzeme") {
+        const newMalzemeler = [...siparisData.malzemeler];
+        const index = newMalzemeler.indexOf(value);
+        if (index == -1) {
+          newMalzemeler.push(value);
+        } else {
+          newMalzemeler.splice(index, 1);
+        }
+        setSiparisData({ ...siparisData, malzemeler: [...newMalzemeler] });
+      } else {
+        setSiparisData({ ...siparisData, [name]: value });
+      }
     }
   };
 
-  console.log(secilenMalzemeler);
-  const onChangeSize = (e) => {
-    const newVal = e.target.value;
-    setSize(newVal);
+  const validation = () => {
+    let newErrors = {};
+
+    if (!siparisData.boyut) {
+      newErrors.boyut = errorMessage.boyut;
+    }
+
+    if (!siparisData.hamur || siparisData.hamur === "Hamur Kalınlığı") {
+      newErrors.hamur = errorMessage.hamur;
+    }
+
+    if (siparisData.malzemeler.length < 4) {
+      newErrors.malzeme = errorMessage.malzeme;
+    }
+
+    if (siparisData.isim.trim().length < 3) {
+      newErrors.isim = errorMessage.isim;
+    }
+    setErrors(newErrors);
   };
 
   useEffect(() => {
-    const sizeMoney =
-      size == "Küçük"
-        ? 85.5
-        : size == "Orta"
-        ? 105.5
-        : size == "Büyük"
-        ? 125.5
-        : 0;
-    //setSecimler(secilenMalzemeler.length*5);
-    setTotal(sizeMoney * count + secimler * count);
-  }, [secimler, size, count]);
+    validation();
+  }, [siparisData]);
 
   useEffect(() => {
-    setSecimler(secilenMalzemeler.length * 5);
-  }, [secilenMalzemeler]);
+    setIsValid(
+      !errors.isim &&
+        !errors.malzeme &&
+        !errors.hamur &&
+        !errors.boyut &&
+        siparisData.total() !== 0
+    );
+  }, [errors]);
 
-  // useEffect( () => {  },[size])
+  const onClick = (e) => {
+    axios
+      .post("https://reqres.in/api/pizza", siparisData)
+      .then((response) => {
+        console.log("Post isteği başarı ile gönderildi.");
+        console.log(response.data);
+        data(siparisData);
+        history.push("/Success");
+      })
+      .catch((error) => {
+        console.log("Post isteği başarısız oldu.");
+        console.error("Hata:", error);
+      });
+  };
+
   return (
     <>
       <div className="all">
@@ -95,32 +140,44 @@ function OrderPizza() {
             src="../../Assets/mile1-assets/logo.svg"
             alt="Teknolojik Yemekler"
           />
-          <nav>
-            <a href="">AnaSayfa-</a>
-            <a href="">Seçenekler-</a>
-            <a href="">Sipariş Oluştur</a>
-          </nav>
         </header>
 
-        <div className="main">
-          <div className="container-orderpizza">
-            <h2>Position Absolute Acı Pizza</h2>
-            <div className="rakam">
-              <p className="rakam-p">85.50₺</p>
-              <div className="rakam2">
-                <p>4.9</p>
-                <p>(200)</p>
+        <section>
+          {" "}
+          <article className="article-ust">
+            <img
+              src="../../Assets/mile2-aseets/pictures/form-banner.png"
+              alt=""
+            />
+            <div className="ust-content">
+              <nav>
+                <a href="/">AnaSayfa - </a>
+                <a href="">Sipariş Oluştur</a>
+              </nav>
+              <h2>Position Absolute Acı Pizza</h2>
+              <div className="rakam">
+                <p className="rakam-p">85.50₺</p>
+
+                <div className="rakam-2">
+                  <p>4.9</p>
+                  <p>(200)</p>
+                </div>
               </div>
+              <p>
+                Frontent Dev olarak hala position:absolute kullanıyorsan bu çok
+                acı pizza tam sana göre. Pizza, domates, peynir ve genellikle
+                çeşitli diğer malzemelerle kaplanmış, daha sonra geleneksel
+                olarak odun ateşinde bir fırında yüksek sıcaklıkta pişirilen,
+                genellikle yuvarlak, düzleştirilmiş mayalı buğday bazlı hamurdan
+                oluşan İtalyan kökenli lezzetli bir yemektir. . Küçük bir
+                pizzaya bazen pizzetta denir.
+              </p>
             </div>
-            <p>
-              Frontent Dev olarak hala position:absolute kullanıyorsan bu çok
-              acı pizza tam sana göre. Pizza, domates, peynir ve genellikle
-              çeşitli diğer malzemelerle kaplanmış, daha sonra geleneksel olarak
-              odun ateşinde bir fırında yüksek sıcaklıkta pişirilen, genellikle
-              yuvarlak, düzleştirilmiş mayalı buğday bazlı hamurdan oluşan
-              İtalyan kökenli lezzetli bir yemektir. . Küçük bir pizzaya bazen
-              pizzetta denir.
-            </p>
+          </article>
+        </section>
+
+        <section>
+          <article className="article-alt">
             <div className="boyut-hamur">
               <FormGroup tag="fieldset">
                 <Label>
@@ -128,62 +185,89 @@ function OrderPizza() {
                 </Label>
                 <FormGroup check>
                   <Input
-                    name="radio1"
+                    id="kücük"
+                    name="boyut"
                     type="radio"
                     value="Küçük"
-                    onChange={onChangeSize}
+                    onChange={onChange}
                   />{" "}
-                  <Label check>Küçük</Label>
+                  <Label for="kücük" check>
+                    Küçük
+                  </Label>
                 </FormGroup>
                 <FormGroup check>
                   <Input
-                    name="radio1"
+                    id="orta"
+                    name="boyut"
                     type="radio"
                     value="Orta"
-                    onChange={onChangeSize}
+                    onChange={onChange}
                   />{" "}
-                  <Label check>Orta</Label>
+                  <Label for="orta" check>
+                    Orta
+                  </Label>
                 </FormGroup>
                 <FormGroup check>
                   <Input
-                    name="radio1"
+                    id="buyuk"
+                    name="boyut"
                     type="radio"
                     value="Büyük"
-                    onChange={onChangeSize}
+                    onChange={onChange}
                   />{" "}
-                  <Label check>Büyük</Label>
+                  <Label for="buyuk" check>
+                    Büyük
+                  </Label>
                 </FormGroup>
+                {errors.boyut && <p className="red-p">{errors.boyut}</p>}
               </FormGroup>
               <FormGroup>
                 <Label for="hamur">
                   Hamur Seç <span>*</span>
                 </Label>
-                <Input id="hamur" name="select" type="select">
+                <Input
+                  id="hamur"
+                  name="hamur"
+                  type="select"
+                  onChange={onChange}
+                >
                   <option>Hamur Kalınlığı</option>
                   <option>Kalın Kenar</option>
                   <option>Orta Kenar</option>
                   <option>İnce Kenar</option>
                 </Input>
+                {errors.hamur && <p className="red-p">{errors.hamur}</p>}
               </FormGroup>
             </div>
             <div className="malzeme-container">
               <p>Ek Malzemeler</p>
-              <p>En Fazla 10 malzeme seçebilirsiniz. 5₺</p>
+              <p>En Fazla 10 malzeme , en az 4 malzeme seçebilirsiniz. 5₺</p>
               <Form>
                 {malzemeler.map((malzeme, index) => {
                   return (
-                    <FormGroup check inline>
+                    <FormGroup check inline key={index}>
                       <Input
+                        id={malzeme}
                         type="checkbox"
-                        onChange={onChangeSecimler}
+                        name="malzeme"
+                        onChange={onChange}
                         value={malzeme}
-                        key={index}
+                        disabled={
+                          siparisData.malzemeler.includes(malzeme)
+                            ? false
+                            : siparisData.malzemeler.length >= 10
+                            ? true
+                            : false
+                        }
                       />
-                      <Label check>{malzeme}</Label>
+                      <Label for={malzeme} check>
+                        {malzeme}
+                      </Label>
                     </FormGroup>
                   );
                 })}
               </Form>
+              {errors.malzeme && <p className="red-p">{errors.malzeme}</p>}
             </div>
             <FormGroup className="sipariş-notu">
               <Label for="isim">İsim</Label>
@@ -192,48 +276,57 @@ function OrderPizza() {
                 name="isim"
                 type="textarea"
                 placeholder="En az 3 karakterli isim giriniz!"
-                onChange={onChangeName}
-                value={name}
+                onChange={onChange}
+                invalid={!!errors.isim}
               />
+              {errors.isim && <FormFeedback>{errors.isim}</FormFeedback>}
             </FormGroup>
+
             <FormGroup className="sipariş-notu">
-              <Label for="exampleText">Sipariş Notu</Label>
+              <Label for="siparişNotu">Sipariş Notu</Label>
               <Input
-                id="exampleText"
-                name="text"
+                id="siparişNotu"
+                name="not"
                 type="textarea"
                 placeholder="Siparişine eklemek istediğin bir not var mı?"
-                onChange={onChangeSiparisNotu}
-                value={siparisNotu}
+                onChange={onChange}
               />
             </FormGroup>
             <hr />
             <div className="pizza-onay">
               <div className="sayac">
-                <button onClick={() => onChange("Azalt")}>-</button>{" "}
-                <p>{count}</p>{" "}
-                <button onClick={() => onChange("Arttır")}>+</button>
+                <button onClick={() => onChange("azalt")}>-</button>{" "}
+                <p>{siparisData.adet}</p>{" "}
+                <button onClick={() => onChange("arttır")}>+</button>
               </div>
               <div className="sipariş-card">
                 {" "}
                 <div className="sipariş-genel">
                   <h5>Sipariş Toplamı</h5>
                   <div className="secimler">
-                    <p>Seçimler</p> <p>{secimler}₺</p>
+                    <p>Seçimler</p>{" "}
+                    <p>
+                      {siparisData.malzemeler.length * 5 * siparisData.adet}₺
+                    </p>
                   </div>
                   <div className="toplam">
-                    <p>Toplam</p> <p>{total}₺</p>
+                    <p>Toplam</p> <p>{siparisData.total()}₺</p>
                   </div>
                 </div>
-                <div className="link-pizza">
-                  <Link to="/OrderSuccess">SİPARİŞ VER</Link>{" "}
-                </div>
+                <button
+                  className="link-pizza"
+                  disabled={!isValid}
+                  onClick={onClick}
+                >
+                  SİPARİŞ VER
+                </button>
               </div>
             </div>
-          </div>
-        </div>
+          </article>
+        </section>
+
+        <Footer></Footer>
       </div>
-      <Footer></Footer>
     </>
   );
 }

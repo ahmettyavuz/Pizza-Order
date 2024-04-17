@@ -1,20 +1,29 @@
-import { Route } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import Home from "./components/Home";
 import OrderPizza from "./components/OrderPizza";
 import Success from "./components/Success";
+import { useState } from "react";
 
 function App() {
+  const [siparisData, setSiparisData] = useState({});
+
+  const data = (data) => {
+    setSiparisData(data);
+  };
+
   return (
     <>
-      <Route exact path="/">
-        <Home />
-      </Route>
-      <Route exact path="/OrderPizza">
-        <OrderPizza />
-      </Route>
-      <Route exact path="/Success">
-        <Success />
-      </Route>
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Route exact path="/OrderPizza">
+          <OrderPizza data={data} />
+        </Route>
+        <Route exact path="/Success">
+          <Success siparisData={siparisData} />
+        </Route>
+      </Switch>
     </>
   );
 }
