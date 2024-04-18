@@ -92,8 +92,8 @@
 .hack-burger,
 .cok-hızlı {
   position: absolute;
-  top: 44px;
-  left: 49px;
+  top: 20px;
+  left: 29px;
 }
 
 .ozel-lezzetus h3 {
@@ -178,7 +178,7 @@
 }
 
 .home-main section img {
-  max-width: 100%;
+  max-width: 25vw;
   height: auto;
 }
 
@@ -211,13 +211,13 @@
   justify-content: space-around;
   text-align: center;
   flex-wrap: wrap;
-  width: 100%;
+  width: 55vw;
   gap: 1vw;
 }
 
 .nav-section a {
   text-decoration: none;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 500;
   line-height: 2rem;
   color: #000;
@@ -227,7 +227,6 @@
   border-radius: 40px;
   display: flex;
   align-items: center;
-  min-width: 11rem;
 }
 
 .nav-section a img {

@@ -53,6 +53,7 @@ const siparisForm = {
 function OrderPizza(props) {
   const [siparisData, setSiparisData] = useState(siparisForm);
   const [isValid, setIsValid] = useState(false);
+  ("");
   const [errors, setErrors] = useState({});
 
   const history = useHistory();
@@ -117,7 +118,7 @@ function OrderPizza(props) {
     );
   }, [errors]);
 
-  const onClick = (e) => {
+  const onClick = () => {
     axios
       .post("https://reqres.in/api/pizza", siparisData)
       .then((response) => {
