@@ -258,3 +258,62 @@ nav a:nth-of-type(2) {
     max-width: 80%;
   }
 }
+.invalid-feedback {
+  font-size: 1rem;
+}
+
+/*deneme*/
+
+/* Checkbox'un gizli olduğu ve özelleştirilmiş görünümünü sağlayan CSS */
+.custom-checkbox {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Checkbox'un gizli olduğu ve özelleştirilmiş görünümünü sağlayan CSS */
+.custom-checkbox {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Özelleştirilmiş checkbox'un stilini tanımlayan CSS */
+.checkbox-label {
+  position: relative;
+  padding-left: 25px; /* Checkbox'un solundaki boşluk */
+  cursor: pointer;
+}
+
+/* Checkbox'un görünümünü sağlayan stil */
+.checkbox-label:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 30px; /* Checkbox'un genişliği */
+  height: 30px; /* Checkbox'un yüksekliği */
+  background-color: #f3f3f3; /* Checkbox'un arka plan rengi (krem) */
+  border-radius: 5px; /* Checkbox'un köşelerinin yuvarlatılması */
+}
+
+/* Checkbox seçili olduğunda stil */
+.custom-checkbox:checked + .checkbox-label:before {
+  background-color: orange; /* Checkbox'un arka plan rengi (turuncu) */
+}
+
+/* Checkbox seçili olduğunda stil */
+.checkbox-label:after {
+  content: "\2713"; /* Tik işareti kodu */
+  position: absolute;
+  left: 7px; /* Tik işaretinin konumu */
+  top: 4px; /* Tik işaretinin konumu */
+  font-size: 16px; /* Tik işareti boyutu */
+  color: green; /* Tik işareti rengi */
+  visibility: hidden; /* Varsayılan olarak gizli */
+}
+
+/* Checkbox seçili olduğunda stil */
+.custom-checkbox:checked + .checkbox-label:after {
+  visibility: visible; /* Tik işareti görünür olacak */
+}

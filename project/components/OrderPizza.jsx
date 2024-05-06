@@ -20,6 +20,7 @@ const malzemeler = [
   "Kabak",
   "Soğan",
   "Sarımsak",
+  "zeytin",
 ];
 
 const errorMessage = {
@@ -180,7 +181,7 @@ function OrderPizza(props) {
         <section>
           <article className="article-alt">
             <div className="boyut-hamur">
-              <FormGroup tag="fieldset">
+              <FormGroup className="boyut" tag="fieldset">
                 <Label>
                   Boyut Seç <span>*</span>
                 </Label>
@@ -222,6 +223,7 @@ function OrderPizza(props) {
                 </FormGroup>
                 {errors.boyut && <p className="red-p">{errors.boyut}</p>}
               </FormGroup>
+
               <FormGroup>
                 <Label for="hamur">
                   Hamur Seç <span>*</span>
@@ -246,8 +248,22 @@ function OrderPizza(props) {
               <Form>
                 {malzemeler.map((malzeme, index) => {
                   return (
-                    <FormGroup check inline key={index}>
+                    <FormGroup
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "1rem",
+                      }}
+                      check
+                      inline
+                      key={index}
+                    >
                       <Input
+                        style={{
+                          backgroundColor: "yellow",
+                          width: "40px",
+                          height: "40px",
+                        }}
                         id={malzeme}
                         type="checkbox"
                         name="malzeme"
@@ -269,6 +285,12 @@ function OrderPizza(props) {
                 })}
               </Form>
               {errors.malzeme && <p className="red-p">{errors.malzeme}</p>}
+            </div>
+            <div className="check">
+              <input type="checkbox" class="custom-checkbox" id="myCheckbox" />
+              <label for="myCheckbox" class="checkbox-label">
+                Checkbox
+              </label>
             </div>
             <FormGroup className="sipariş-notu">
               <Label for="isim">İsim</Label>
