@@ -295,6 +295,9 @@
     left: 44px;
   }
 
+  body {
+    font-size: 12px;
+  }
   .ozel-lezzetus h3 {
     font-size: 3.1rem;
     width: 30%;
@@ -324,7 +327,9 @@
     top: 36px;
     left: 38px;
   }
-
+  body {
+    font-size: 10px;
+  }
   .ozel-lezzetus h3 {
     font-size: 3.1rem;
     width: 30%;
@@ -357,6 +362,9 @@
     left: 36px;
   }
 
+  body {
+    font-size: 8px;
+  }
   .ozel-lezzetus h3 {
     font-size: 3.1rem;
     width: 30%;
