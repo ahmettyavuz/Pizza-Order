@@ -14,7 +14,10 @@ function App() {
   return (
     <>
       <Switch>
+
+
         <Route exact path="/home">
+
           <Home />
         </Route>
         <Route exact path="/OrderPizza">
