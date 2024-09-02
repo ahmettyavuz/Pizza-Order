@@ -2,6 +2,7 @@ import "./footer.css";
 import { FaTwitter } from "react-icons/fa";
 
 export default function Footer() {
+  //deneme
   return (
     <footer className="footer">
       <div className="footer-ust">
