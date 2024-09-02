@@ -8,7 +8,7 @@
 .home {
   display: flex;
   justify-content: center;
-  background-image: url("../../Assets/mile1-assets/home-banner.png");
+  background-image: url("../Assets/mile1-assets/home-banner.png");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -92,8 +92,8 @@
 .hack-burger,
 .cok-hızlı {
   position: absolute;
-  top: 20px;
-  left: 29px;
+  top: 44px;
+  left: 49px;
 }
 
 .ozel-lezzetus h3 {
@@ -178,7 +178,7 @@
 }
 
 .home-main section img {
-  max-width: 25vw;
+  max-width: 100%;
   height: auto;
 }
 
@@ -211,13 +211,13 @@
   justify-content: space-around;
   text-align: center;
   flex-wrap: wrap;
-  width: 55vw;
+  width: 100%;
   gap: 1vw;
 }
 
 .nav-section a {
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   font-weight: 500;
   line-height: 2rem;
   color: #000;
@@ -227,6 +227,7 @@
   border-radius: 40px;
   display: flex;
   align-items: center;
+  min-width: 11rem;
 }
 
 .nav-section a img {
@@ -286,6 +287,7 @@
   font-weight: 600;
   line-height: 1.8;
 }
+
 @media screen and (max-width: 1600px) {
   .ozel-lezzetus,
   .hack-burger,
@@ -295,9 +297,6 @@
     left: 44px;
   }
 
-  body {
-    font-size: 12px;
-  }
   .ozel-lezzetus h3 {
     font-size: 3.1rem;
     width: 30%;
@@ -327,9 +326,7 @@
     top: 36px;
     left: 38px;
   }
-  body {
-    font-size: 10px;
-  }
+
   .ozel-lezzetus h3 {
     font-size: 3.1rem;
     width: 30%;
@@ -362,9 +359,6 @@
     left: 36px;
   }
 
-  body {
-    font-size: 8px;
-  }
   .ozel-lezzetus h3 {
     font-size: 3.1rem;
     width: 30%;
@@ -385,6 +379,7 @@
     margin-top: 0.6rem;
   }
 }
+
 @media screen and (max-width: 600px) {
   .ozel-lezzetus,
   .hack-burger,

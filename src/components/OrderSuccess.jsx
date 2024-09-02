@@ -1,16 +1,16 @@
-import { useHistory } from "react-router-dom";
-import "./success.css";
-function Success(props) {
-  const { siparisData } = props;
+import "./ordersuccess.css";
+import logo from "../Assets/mile1-assets/logo.svg";
 
+function OrderSuccess(props) {
+  const { siparisData } = props;
+  if (!siparisData.total) {
+    return <div> sipariş yok </div>;
+  }
   return (
     <>
       <div className="success">
         <div className="success-container">
-          <img
-            src="../../Assets/mile1-assets/logo.svg"
-            alt="Teknolojik Yemekler"
-          />
+          <img src={logo} alt="Teknolojik Yemekler" />
 
           <div className="success-content">
             <p>lezzetin yolda</p>
@@ -53,4 +53,4 @@ function Success(props) {
   );
 }
 
-export default Success;
+export default OrderSuccess;

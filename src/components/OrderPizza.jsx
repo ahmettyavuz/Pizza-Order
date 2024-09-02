@@ -1,10 +1,11 @@
 import { Form, FormFeedback, FormGroup, Input, Label } from "reactstrap";
 import "./orderpizza.css";
-import { Link } from "react-router-dom";
+import logo from "../Assets/mile1-assets/logo.svg";
+import formBanner from "../Assets/mile2-assets/pictures/form-banner.png";
 import { useEffect, useState } from "react";
 import Footer from "./Footer";
 import axios from "axios";
-import { useHistory } from "react-router-dom/";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const malzemeler = [
   "Pepperoni",
@@ -20,7 +21,6 @@ const malzemeler = [
   "Kabak",
   "Soğan",
   "Sarımsak",
-  "zeytin",
 ];
 
 const errorMessage = {
@@ -54,7 +54,6 @@ const siparisForm = {
 function OrderPizza(props) {
   const [siparisData, setSiparisData] = useState(siparisForm);
   const [isValid, setIsValid] = useState(false);
-  ("");
   const [errors, setErrors] = useState({});
 
   const history = useHistory();
@@ -119,14 +118,14 @@ function OrderPizza(props) {
     );
   }, [errors]);
 
-  const onClick = () => {
+  const onClick = (e) => {
     axios
       .post("https://reqres.in/api/pizza", siparisData)
       .then((response) => {
         console.log("Post isteği başarı ile gönderildi.");
         console.log(response.data);
         data(siparisData);
-        history.push("/Success");
+        history.push("/OrderSuccess");
       })
       .catch((error) => {
         console.log("Post isteği başarısız oldu.");
@@ -138,19 +137,13 @@ function OrderPizza(props) {
     <>
       <div className="all">
         <header className="orderPizza">
-          <img
-            src="../../Assets/mile1-assets/logo.svg"
-            alt="Teknolojik Yemekler"
-          />
+          <img src={logo} alt="Teknolojik Yemekler" />
         </header>
 
         <section>
           {" "}
           <article className="article-ust">
-            <img
-              src="../../Assets/mile2-aseets/pictures/form-banner.png"
-              alt=""
-            />
+            <img src={formBanner} alt="formBanner" />
             <div className="ust-content">
               <nav>
                 <a href="/">AnaSayfa - </a>
@@ -181,19 +174,20 @@ function OrderPizza(props) {
         <section>
           <article className="article-alt">
             <div className="boyut-hamur">
-              <FormGroup className="boyut" tag="fieldset">
+              <FormGroup tag="fieldset">
                 <Label>
                   Boyut Seç <span>*</span>
                 </Label>
                 <FormGroup check>
                   <Input
-                    id="kücük"
+                    id="küçük"
                     name="boyut"
                     type="radio"
                     value="Küçük"
+                    checked={siparisData.boyut === "Küçük"}
                     onChange={onChange}
                   />{" "}
-                  <Label for="kücük" check>
+                  <Label for="küçük" check>
                     Küçük
                   </Label>
                 </FormGroup>
@@ -203,6 +197,7 @@ function OrderPizza(props) {
                     name="boyut"
                     type="radio"
                     value="Orta"
+                    checked={siparisData.boyut === "Orta"}
                     onChange={onChange}
                   />{" "}
                   <Label for="orta" check>
@@ -211,19 +206,19 @@ function OrderPizza(props) {
                 </FormGroup>
                 <FormGroup check>
                   <Input
-                    id="buyuk"
+                    id="büyük"
                     name="boyut"
                     type="radio"
                     value="Büyük"
+                    checked={siparisData.boyut === "Büyük"}
                     onChange={onChange}
                   />{" "}
-                  <Label for="buyuk" check>
+                  <Label for="büyük" check>
                     Büyük
                   </Label>
                 </FormGroup>
                 {errors.boyut && <p className="red-p">{errors.boyut}</p>}
               </FormGroup>
-
               <FormGroup>
                 <Label for="hamur">
                   Hamur Seç <span>*</span>
@@ -233,11 +228,13 @@ function OrderPizza(props) {
                   name="hamur"
                   type="select"
                   onChange={onChange}
+                  /* value={siparisData.hamur}*/
                 >
                   <option>Hamur Kalınlığı</option>
                   <option>Kalın Kenar</option>
                   <option>Orta Kenar</option>
                   <option>İnce Kenar</option>
+                  <option>Süper İnce Kenar</option>
                 </Input>
                 {errors.hamur && <p className="red-p">{errors.hamur}</p>}
               </FormGroup>
@@ -248,27 +245,14 @@ function OrderPizza(props) {
               <Form>
                 {malzemeler.map((malzeme, index) => {
                   return (
-                    <FormGroup
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "1rem",
-                      }}
-                      check
-                      inline
-                      key={index}
-                    >
+                    <FormGroup check inline key={index}>
                       <Input
-                        style={{
-                          backgroundColor: "yellow",
-                          width: "40px",
-                          height: "40px",
-                        }}
                         id={malzeme}
                         type="checkbox"
                         name="malzeme"
                         onChange={onChange}
                         value={malzeme}
+                        checked={siparisData.malzemeler.includes(malzeme)}
                         disabled={
                           siparisData.malzemeler.includes(malzeme)
                             ? false
@@ -286,12 +270,6 @@ function OrderPizza(props) {
               </Form>
               {errors.malzeme && <p className="red-p">{errors.malzeme}</p>}
             </div>
-            <div className="check">
-              <input type="checkbox" class="custom-checkbox" id="myCheckbox" />
-              <label for="myCheckbox" class="checkbox-label">
-                Checkbox
-              </label>
-            </div>
             <FormGroup className="sipariş-notu">
               <Label for="isim">İsim</Label>
               <Input
@@ -300,6 +278,7 @@ function OrderPizza(props) {
                 type="textarea"
                 placeholder="En az 3 karakterli isim giriniz!"
                 onChange={onChange}
+                value={siparisData.isim}
                 invalid={!!errors.isim}
               />
               {errors.isim && <FormFeedback>{errors.isim}</FormFeedback>}
@@ -313,6 +292,7 @@ function OrderPizza(props) {
                 type="textarea"
                 placeholder="Siparişine eklemek istediğin bir not var mı?"
                 onChange={onChange}
+                value={siparisData.not}
               />
             </FormGroup>
             <hr />
@@ -347,7 +327,6 @@ function OrderPizza(props) {
             </div>
           </article>
         </section>
-
         <Footer></Footer>
       </div>
     </>
